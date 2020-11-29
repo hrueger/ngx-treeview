@@ -13,6 +13,7 @@ export interface TreeItem {
   checked?: boolean;
   collapsed?: boolean;
   children?: TreeItem[];
+  data?: Record<string, any>;
 }
 
 export class TreeviewItem {
@@ -22,6 +23,7 @@ export class TreeviewItem {
   private internalChildren: TreeviewItem[];
   text: string;
   value: any;
+  public data: Record<string, any>;
 
   constructor(item: TreeItem, autoCorrectChecked = false) {
     if (isNil(item)) {
@@ -51,6 +53,7 @@ export class TreeviewItem {
         return new TreeviewItem(child);
       });
     }
+    this.data = item.data;
 
     if (autoCorrectChecked) {
       this.correctChecked();

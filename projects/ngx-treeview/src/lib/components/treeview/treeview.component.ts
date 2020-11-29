@@ -17,7 +17,8 @@ class FilterTreeviewItem extends TreeviewItem {
       disabled: item.disabled,
       checked: item.checked,
       collapsed: item.collapsed,
-      children: item.children
+      children: item.children,
+      data: item.data
     });
     this.refItem = item;
   }
