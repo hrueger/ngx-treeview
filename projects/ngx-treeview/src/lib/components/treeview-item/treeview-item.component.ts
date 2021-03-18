@@ -9,10 +9,10 @@ import { TreeviewItemTemplateContext } from '../../models/treeview-item-template
   templateUrl: './treeview-item.component.html',
   styleUrls: ['./treeview-item.component.scss']
 })
-export class TreeviewItemComponent {
+export class TreeviewItemComponent<T> {
   @Input() config: TreeviewConfig;
-  @Input() template: TemplateRef<TreeviewItemTemplateContext>;
-  @Input() item: TreeviewItem;
+  @Input() template: TemplateRef<TreeviewItemTemplateContext<T>>;
+  @Input() item: TreeviewItem<T>;
   @Output() checkedChange = new EventEmitter<boolean>();
 
   constructor(
@@ -33,7 +33,7 @@ export class TreeviewItemComponent {
     this.checkedChange.emit(checked);
   }
 
-  onChildCheckedChange(child: TreeviewItem, checked: boolean): void {
+  onChildCheckedChange(child: TreeviewItem<T>, checked: boolean): void {
     if (!this.config.decoupleChildFromParent) {
       let itemChecked: boolean = null;
       for (const childItem of this.item.children) {

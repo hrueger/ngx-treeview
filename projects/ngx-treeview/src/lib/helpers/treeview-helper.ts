@@ -9,7 +9,7 @@ export const TreeviewHelper = {
   concatSelection
 };
 
-function findItem(root: TreeviewItem, value: any): TreeviewItem {
+function findItem<T>(root: TreeviewItem<T>, value: any): TreeviewItem<T> {
   if (isNil(root)) {
     return undefined;
   }
@@ -30,7 +30,7 @@ function findItem(root: TreeviewItem, value: any): TreeviewItem {
   return undefined;
 }
 
-function findItemInList(list: TreeviewItem[], value: any): TreeviewItem {
+function findItemInList<T>(list: TreeviewItem<T>[], value: any): TreeviewItem<T> {
   if (isNil(list)) {
     return undefined;
   }
@@ -45,7 +45,7 @@ function findItemInList(list: TreeviewItem[], value: any): TreeviewItem {
   return undefined;
 }
 
-function findParent(root: TreeviewItem, item: TreeviewItem): TreeviewItem {
+function findParent<T>(root: TreeviewItem<T>, item: TreeviewItem<T>): TreeviewItem<T> {
   if (isNil(root) || isNil(root.children)) {
     return undefined;
   }
@@ -64,7 +64,7 @@ function findParent(root: TreeviewItem, item: TreeviewItem): TreeviewItem {
   return undefined;
 }
 
-function removeItem(root: TreeviewItem, item: TreeviewItem): boolean {
+function removeItem<T>(root: TreeviewItem<T>, item: TreeviewItem<T>): boolean {
   const parent = findParent(root, item);
   if (parent) {
     pull(parent.children, item);
@@ -79,7 +79,7 @@ function removeItem(root: TreeviewItem, item: TreeviewItem): boolean {
   return false;
 }
 
-function concatSelection(items: TreeviewItem[], checked: TreeviewItem[], unchecked: TreeviewItem[]): { [k: string]: TreeviewItem[] } {
+function concatSelection<T>(items: TreeviewItem<T>[], checked: TreeviewItem<T>[], unchecked: TreeviewItem<T>[]): { [k: string]: TreeviewItem<T>[] } {
   let checkedItems = [...checked];
   let uncheckedItems = [...unchecked];
   for (const item of items) {

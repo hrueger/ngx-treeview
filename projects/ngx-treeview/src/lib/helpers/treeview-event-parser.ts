@@ -4,13 +4,13 @@ import { TreeviewItem } from '../models/treeview-item';
 import { TreeviewComponent } from '../components/treeview/treeview.component';
 
 @Injectable()
-export abstract class TreeviewEventParser {
-  abstract getSelectedChange(component: TreeviewComponent): any[];
+export abstract class TreeviewEventParser<T> {
+  abstract getSelectedChange(component: TreeviewComponent<T>): any[];
 }
 
 @Injectable()
-export class DefaultTreeviewEventParser extends TreeviewEventParser {
-  getSelectedChange(component: TreeviewComponent): any[] {
+export class DefaultTreeviewEventParser<T> extends TreeviewEventParser<T> {
+  getSelectedChange(component: TreeviewComponent<T>): any[] {
     const checkedItems = component.selection.checkedItems;
     if (!isNil(checkedItems)) {
       return checkedItems.map(item => item.value);
@@ -20,17 +20,17 @@ export class DefaultTreeviewEventParser extends TreeviewEventParser {
   }
 }
 
-export interface DownlineTreeviewItem {
-  item: TreeviewItem;
-  parent: DownlineTreeviewItem;
+export interface DownlineTreeviewItem<T> {
+  item: TreeviewItem<T>;
+  parent: DownlineTreeviewItem<T>;
 }
 
 @Injectable()
-export class DownlineTreeviewEventParser extends TreeviewEventParser {
-  getSelectedChange(component: TreeviewComponent): any[] {
+export class DownlineTreeviewEventParser<T> extends TreeviewEventParser<T> {
+  getSelectedChange(component: TreeviewComponent<T>): any[] {
     const items = component.items;
     if (!isNil(items)) {
-      let result: DownlineTreeviewItem[] = [];
+      let result: DownlineTreeviewItem<T>[] = [];
       items.forEach(item => {
         const links = this.getLinks(item, null);
         if (!isNil(links)) {
@@ -44,13 +44,13 @@ export class DownlineTreeviewEventParser extends TreeviewEventParser {
     return [];
   }
 
-  private getLinks(item: TreeviewItem, parent: DownlineTreeviewItem): DownlineTreeviewItem[] {
+  private getLinks(item: TreeviewItem<T>, parent: DownlineTreeviewItem<T>): DownlineTreeviewItem<T>[] {
     if (!isNil(item.children)) {
       const link = {
         item,
         parent
       };
-      let result: DownlineTreeviewItem[] = [];
+      let result: DownlineTreeviewItem<T>[] = [];
       item.children.forEach(child => {
         const links = this.getLinks(child, link);
         if (!isNil(links)) {
@@ -73,16 +73,16 @@ export class DownlineTreeviewEventParser extends TreeviewEventParser {
 }
 
 @Injectable()
-export class OrderDownlineTreeviewEventParser extends TreeviewEventParser {
-  private currentDownlines: DownlineTreeviewItem[] = [];
+export class OrderDownlineTreeviewEventParser<T> extends TreeviewEventParser<T> {
+  private currentDownlines: DownlineTreeviewItem<T>[] = [];
   private parser = new DownlineTreeviewEventParser();
 
-  getSelectedChange(component: TreeviewComponent): any[] {
-    const newDownlines: DownlineTreeviewItem[] = this.parser.getSelectedChange(component);
+  getSelectedChange(component: TreeviewComponent<T>): any[] {
+    const newDownlines: DownlineTreeviewItem<T>[] = this.parser.getSelectedChange(component);
     if (this.currentDownlines.length === 0) {
       this.currentDownlines = newDownlines;
     } else {
-      const intersectDownlines: DownlineTreeviewItem[] = [];
+      const intersectDownlines: DownlineTreeviewItem<T>[] = [];
       this.currentDownlines.forEach(downline => {
         let foundIndex = -1;
         const length = newDownlines.length;

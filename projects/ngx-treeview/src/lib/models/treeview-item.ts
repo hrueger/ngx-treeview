@@ -1,31 +1,31 @@
 import { isBoolean, isNil, isString } from 'lodash';
 import { TreeviewHelper } from '../helpers/treeview-helper';
 
-export interface TreeviewSelection {
-  checkedItems: TreeviewItem[];
-  uncheckedItems: TreeviewItem[];
+export interface TreeviewSelection<T> {
+  checkedItems: TreeviewItem<T>[];
+  uncheckedItems: TreeviewItem<T>[];
 }
 
-export interface TreeItem {
+export interface TreeItem<T> {
   text: string;
   value: any;
   disabled?: boolean;
   checked?: boolean;
   collapsed?: boolean;
-  children?: TreeItem[];
-  data?: Record<string, any>;
+  children?: TreeItem<T>[];
+  data?: T;
 }
 
-export class TreeviewItem {
+export class TreeviewItem<T> {
   private internalDisabled = false;
   private internalChecked = true;
   private internalCollapsed = false;
-  private internalChildren: TreeviewItem[];
+  private internalChildren: TreeviewItem<T>[];
   text: string;
   value: any;
-  public data: Record<string, any>;
+  public data: T;
 
-  constructor(item: TreeItem, autoCorrectChecked = false) {
+  constructor(item: TreeItem<T>, autoCorrectChecked = false) {
     if (isNil(item)) {
       throw new Error('Item must be defined');
     }
@@ -115,11 +115,11 @@ export class TreeviewItem {
     }
   }
 
-  get children(): TreeviewItem[] {
+  get children(): TreeviewItem<T>[] {
     return this.internalChildren;
   }
 
-  set children(value: TreeviewItem[]) {
+  set children(value: TreeviewItem<T>[]) {
     if (this.internalChildren !== value) {
       if (!isNil(value) && value.length === 0) {
         throw new Error('Children must be not an empty array');
@@ -142,9 +142,9 @@ export class TreeviewItem {
     }
   }
 
-  getSelection(): TreeviewSelection {
-    let checkedItems: TreeviewItem[] = [];
-    let uncheckedItems: TreeviewItem[] = [];
+  getSelection(): TreeviewSelection<T> {
+    let checkedItems: TreeviewItem<T>[] = [];
+    let uncheckedItems: TreeviewItem<T>[] = [];
     if (isNil(this.internalChildren)) {
       if (this.internalChecked) {
         checkedItems.push(this);

@@ -8,9 +8,9 @@ import { TreeviewItemTemplateContext } from '../../models/treeview-item-template
 import { TreeviewHelper } from '../../helpers/treeview-helper';
 import { TreeviewEventParser } from '../../helpers/treeview-event-parser';
 
-class FilterTreeviewItem extends TreeviewItem {
-  private readonly refItem: TreeviewItem;
-  constructor(item: TreeviewItem) {
+class FilterTreeviewItem<T> extends TreeviewItem<T> {
+  private readonly refItem: TreeviewItem<T>;
+  constructor(item: TreeviewItem<T>) {
     super({
       text: item.text,
       value: item.value,
@@ -48,23 +48,23 @@ class FilterTreeviewItem extends TreeviewItem {
   templateUrl: './treeview.component.html',
   styleUrls: ['./treeview.component.scss']
 })
-export class TreeviewComponent implements OnChanges, OnInit {
-  @Input() headerTemplate: TemplateRef<TreeviewHeaderTemplateContext>;
-  @Input() itemTemplate: TemplateRef<TreeviewItemTemplateContext>;
-  @Input() items: TreeviewItem[];
+export class TreeviewComponent<T> implements OnChanges, OnInit {
+  @Input() headerTemplate: TemplateRef<TreeviewHeaderTemplateContext<T>>;
+  @Input() itemTemplate: TemplateRef<TreeviewItemTemplateContext<T>>;
+  @Input() items: TreeviewItem<T>[];
   @Input() config: TreeviewConfig;
   @Output() selectedChange = new EventEmitter<any[]>();
   @Output() filterChange = new EventEmitter<string>();
-  headerTemplateContext: TreeviewHeaderTemplateContext;
-  allItem: TreeviewItem;
+  headerTemplateContext: TreeviewHeaderTemplateContext<T>;
+  allItem: TreeviewItem<T>;
   filterText = '';
-  filterItems: TreeviewItem[];
-  selection: TreeviewSelection;
+  filterItems: TreeviewItem<T>[];
+  selection: TreeviewSelection<T>;
 
   constructor(
-    public i18n: TreeviewI18n,
+    public i18n: TreeviewI18n<T>,
     private defaultConfig: TreeviewConfig,
-    private eventParser: TreeviewEventParser
+    private eventParser: TreeviewEventParser<T>
   ) {
     this.config = this.defaultConfig;
     this.allItem = new TreeviewItem({ text: 'All', value: undefined });
@@ -115,7 +115,7 @@ export class TreeviewComponent implements OnChanges, OnInit {
     this.raiseSelectedChange();
   }
 
-  onItemCheckedChange(item: TreeviewItem, checked: boolean): void {
+  onItemCheckedChange(item: TreeviewItem<T>, checked: boolean): void {
     if (item instanceof FilterTreeviewItem) {
       item.updateRefChecked();
     }
@@ -143,8 +143,8 @@ export class TreeviewComponent implements OnChanges, OnInit {
   }
 
   private generateSelection(): void {
-    let checkedItems: TreeviewItem[] = [];
-    let uncheckedItems: TreeviewItem[] = [];
+    let checkedItems: TreeviewItem<T>[] = [];
+    let uncheckedItems: TreeviewItem<T>[] = [];
     if (!isNil(this.items)) {
       const selection = TreeviewHelper.concatSelection(this.items, checkedItems, uncheckedItems);
       checkedItems = selection.checked;
@@ -159,7 +159,7 @@ export class TreeviewComponent implements OnChanges, OnInit {
 
   private updateFilterItems(): void {
     if (this.filterText !== '') {
-      const filterItems: TreeviewItem[] = [];
+      const filterItems: TreeviewItem<T>[] = [];
       const filterText = this.filterText.toLowerCase();
       this.items.forEach(item => {
         const newItem = this.filterItem(item, filterText);
@@ -175,13 +175,13 @@ export class TreeviewComponent implements OnChanges, OnInit {
     this.updateCheckedOfAll();
   }
 
-  private filterItem(item: TreeviewItem, filterText: string): TreeviewItem {
+  private filterItem(item: TreeviewItem<T>, filterText: string): TreeviewItem<T> {
     const isMatch = includes(item.text.toLowerCase(), filterText);
     if (isMatch) {
       return item;
     } else {
       if (!isNil(item.children)) {
-        const children: TreeviewItem[] = [];
+        const children: TreeviewItem<T>[] = [];
         item.children.forEach(child => {
           const newChild = this.filterItem(child, filterText);
           if (!isNil(newChild)) {

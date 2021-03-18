@@ -6,7 +6,7 @@ import { TreeviewItem } from '../models/treeview-item';
   name: 'ngxTreeview'
 })
 export class TreeviewPipe implements PipeTransform {
-  transform(objects: any[], textField: string): TreeviewItem[] {
+  transform(objects: any[], textField: string): TreeviewItem<any>[] {
     if (isNil(objects)) {
       return undefined;
     }

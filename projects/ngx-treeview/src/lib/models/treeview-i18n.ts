@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { TreeviewSelection } from './treeview-item';
 
 @Injectable()
-export abstract class TreeviewI18n {
-  abstract getText(selection: TreeviewSelection): string;
+export abstract class TreeviewI18n<T> {
+  abstract getText(selection: TreeviewSelection<T>): string;
   abstract getAllCheckboxText(): string;
   abstract getFilterPlaceholder(): string;
   abstract getFilterNoItemsFoundText(): string;
@@ -11,8 +11,8 @@ export abstract class TreeviewI18n {
 }
 
 @Injectable()
-export class DefaultTreeviewI18n extends TreeviewI18n {
-  getText(selection: TreeviewSelection): string {
+export class DefaultTreeviewI18n<T> extends TreeviewI18n<T> {
+  getText(selection: TreeviewSelection<T>): string {
     if (selection.uncheckedItems.length === 0) {
       if (selection.checkedItems.length > 0) {
         return this.getAllCheckboxText();

@@ -11,19 +11,19 @@ import { TreeviewItemTemplateContext } from '../../models/treeview-item-template
   templateUrl: './dropdown-treeview.component.html',
   styleUrls: ['./dropdown-treeview.component.scss']
 })
-export class DropdownTreeviewComponent {
+export class DropdownTreeviewComponent<T> {
   @Input() buttonClass = 'btn-outline-secondary';
-  @Input() headerTemplate: TemplateRef<TreeviewHeaderTemplateContext>;
-  @Input() itemTemplate: TemplateRef<TreeviewItemTemplateContext>;
-  @Input() items: TreeviewItem[];
+  @Input() headerTemplate: TemplateRef<TreeviewHeaderTemplateContext<T>>;
+  @Input() itemTemplate: TemplateRef<TreeviewItemTemplateContext<T>>;
+  @Input() items: TreeviewItem<T>[];
   @Input() config: TreeviewConfig;
   @Output() selectedChange = new EventEmitter<any[]>(true);
   @Output() filterChange = new EventEmitter<string>();
-  @ViewChild(TreeviewComponent, { static: false }) treeviewComponent: TreeviewComponent;
+  @ViewChild(TreeviewComponent, { static: false }) treeviewComponent: TreeviewComponent<T>;
   buttonLabel: string;
 
   constructor(
-    public i18n: TreeviewI18n,
+    public i18n: TreeviewI18n<T>,
     private defaultConfig: TreeviewConfig
   ) {
     this.config = this.defaultConfig;
